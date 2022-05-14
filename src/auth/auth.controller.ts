@@ -21,10 +21,9 @@ import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { SignUpResponse } from './dto/sign-up-response.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
-// @ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

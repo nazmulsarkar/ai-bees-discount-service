@@ -3,7 +3,6 @@ import * as uniqueValidator from 'mongoose-unique-validator';
 import { Document, Types } from 'mongoose';
 import { Role } from '../common/enums/role.enum';
 import { LanguageEnum } from '../common/enums/language.enum';
-import Language from '../common/types/language.type';
 
 @Schema({
   timestamps: true,
