@@ -40,7 +40,7 @@ export class User {
   @Prop({ type: Boolean, default: false })
   isActive: boolean;
 
-  @Prop({ type: Language, default: LanguageEnum.EN })
+  @Prop({ default: LanguageEnum.EN })
   language: LanguageEnum;
 
   _id?: Types.ObjectId;
