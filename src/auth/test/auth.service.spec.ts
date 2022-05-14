@@ -1,0 +1,237 @@
+import { JwtModule } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AuthService } from '../auth.service';
+import { userStub } from '../../common/test/stubs/user.stub';
+import { ConfigModule } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from '../../users/users.module';
+import { MailModule } from '../../mail/mail.module';
+import { VerificationModule } from '../../verification/verification.module';
+import { AuthController } from '../auth.controller';
+import { UsersService } from '../../users/users.service';
+import { VerificationService } from '../../verification/verification.service';
+import { MailService } from '../../mail/mail.service';
+import { JwtStrategy } from '../../common/strategies/jwt.strategy';
+import { SignUpResponse } from '../dto/sign-up-response.dto';
+import { SignUp, SignUpDTO } from '../dto/sign-up.dto';
+import {
+  changePasswordDTO,
+  changePasswordResponseStub,
+  signupResponseStub,
+  updatePasswordStub,
+} from './stubs/auth.stubs';
+import {
+  ChangePasswordDTO,
+  ForgotPasswordDTO,
+} from '../dto/forgot-password.dto';
+import { AuthResponseDto } from '../dto/auth-response.dto';
+import { AuthInputDTO } from '../dto/auth-input.dto';
+import { GrantTypeEnum } from '../../common/enums/grant-type.enum';
+
+jest.mock('../../users/users.service');
+jest.mock('../../verification/verification.service');
+jest.mock('../../mail/mail.service');
+jest.mock('../../users/users.module');
+jest.mock('../../verification/verification.module');
+jest.mock('../../common/strategies/jwt.strategy');
+jest.mock('../auth.controller');
+
+describe('AuthService', () => {
+  let authService: AuthService;
+  let usersService: UsersService;
+  let verifyService: VerificationService;
+
+  beforeEach(async () => {
+    jest.resetModules();
+
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({}),
+        PassportModule,
+        JwtModule.register({
+          secret: `${process.env.JWT_SECRET}`,
+          signOptions: { expiresIn: `${process.env.JWT_EXPIRES}` },
+        }),
+        UsersModule,
+        MailModule,
+        VerificationModule,
+      ],
+      controllers: [AuthController],
+      providers: [
+        UsersService,
+        AuthService,
+        VerificationService,
+        JwtStrategy,
+        MailService,
+      ],
+    }).compile();
+
+    authService = moduleRef.get<AuthService>(AuthService);
+    usersService = moduleRef.get<UsersService>(UsersService);
+    verifyService = moduleRef.get<VerificationService>(VerificationService);
+
+    jest.clearAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(authService).toBeDefined();
+  });
+
+  describe('signup', () => {
+    describe('when signup by email is called', () => {
+      let signupResponse: SignUpResponse;
+      let emailSignUpDto: SignUpDTO;
+      let emailSignUp: SignUp;
+
+      beforeEach(async () => {
+        emailSignUpDto = {
+          email: userStub().email,
+        };
+
+        emailSignUp = {
+          ...emailSignUpDto,
+          ...new SignUp(),
+        };
+
+        signupResponse = await authService.signUp(emailSignUp);
+      });
+
+      test('then it should call usersService', () => {
+        expect(usersService.create).toBeCalledWith(emailSignUp);
+      });
+
+      test('then it should return success response', () => {
+        expect(signupResponse).toEqual({ ...signupResponseStub() });
+      });
+    });
+  });
+
+  describe('forgotPassword', () => {
+    describe('when forgotPassword is called', () => {
+      let response: SignUpResponse;
+      let forgotPasswordDto: ForgotPasswordDTO;
+      let queryExistingUser: any;
+
+      beforeEach(async () => {
+        forgotPasswordDto = {
+          email: userStub().email,
+        };
+        queryExistingUser = {
+          email: userStub().email,
+          isEmailVerified: true,
+          isActive: true,
+        };
+
+        response = await authService.forgotPassword(forgotPasswordDto);
+      });
+
+      test('then it should call usersService', () => {
+        expect(usersService.findOne).toBeCalledWith(queryExistingUser);
+      });
+
+      test('then it should return success response', () => {
+        expect(response).toEqual(signupResponseStub());
+      });
+    });
+  });
+
+  describe('changePassword', () => {
+    describe('when changePassword is called', () => {
+      let response: SignUpResponse;
+      let changePasswordDto: ChangePasswordDTO;
+
+      beforeEach(async () => {
+        changePasswordDto = {
+          ...changePasswordDTO(),
+        };
+
+        response = await authService.changePassword(
+          userStub()._id,
+          changePasswordDto,
+        );
+      });
+
+      test('then it should call usersService.updateOne', () => {
+        expect(usersService.updateOne).toBeCalled();
+      });
+
+      // test('then it should call authService.getHash', () => {
+      //   expect(authService.getHash).toBeCalled();
+      // });
+
+      test('then it should return success response', () => {
+        expect(response).toEqual(changePasswordResponseStub());
+      });
+    });
+  });
+
+  describe('updatePassword', () => {
+    describe('when updatePassword is called', () => {
+      let response: AuthResponseDto;
+
+      beforeEach(async () => {
+        response = await authService.updatePassword({
+          ...updatePasswordStub(),
+        });
+      });
+
+      test('then it should call verifyService.findOne', () => {
+        expect(verifyService.findOne).toBeCalled();
+      });
+
+      test('then it should call usersService.updateOne', () => {
+        expect(usersService.updateOne).toBeCalled();
+      });
+
+      test('then it should call verifyService.removeById', () => {
+        expect(verifyService.removeById).toBeCalled();
+      });
+
+      test("then it should return 'token' with success response", () => {
+        expect(response).toHaveProperty('token');
+      });
+
+      test("then it should return 'tokenType' with success response", () => {
+        expect(response).toHaveProperty('tokenType');
+      });
+
+      test("then it should return 'user' with success response", () => {
+        expect(response).toHaveProperty('user');
+      });
+    });
+  });
+
+  describe('authToken', () => {
+    describe('when authToken is called', () => {
+      let response: AuthResponseDto;
+      let authInput: AuthInputDTO;
+
+      beforeEach(async () => {
+        authInput = {
+          grantType: GrantTypeEnum.ACCESS_TOKEN,
+          email: userStub().email,
+          password: `${process.env.DEFAULT_PASS}`,
+        };
+        response = await authService.authToken({
+          ...authInput,
+        });
+      });
+
+      test('then it should check authService.authEmailPass exists', () => {
+        expect(authService.authEmailPass).toBeDefined();
+      });
+
+      test("then it should return 'token' with success response", () => {
+        expect(response).toHaveProperty('token');
+      });
+
+      test("then it should return 'tokenType' with success response", () => {
+        expect(response).toHaveProperty('tokenType');
+      });
+
+      test("then it should return 'user' with success response", () => {
+        expect(response).toHaveProperty('user');
+      });
+    });
+  });
+});
