@@ -2,6 +2,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { MailConfig } from './mail-config.dto';
 // import { VERIFY_EMAIL_TEMPLATE } from '../common/constants/sendgrid-templates';
 // import { JwtPayload } from '../common/interfaces/jwt-payload.interface';
 // import { MailConfig } from './mail-config.dto';
@@ -14,15 +15,15 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
-  async sendUserConfirmation(ctxData) {
+  async sendEmail({ config, ctx }: { config: MailConfig; ctx: any }) {
     return this.mailerService.sendMail({
-      to: ctxData.email,
-      // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Welcome to Discount Service! Please confirm your email.',
-      template: './confirmation',
-      context: {
-        ...ctxData,
-      },
+      to: config.to,
+      from: config.from || '"No Reply" <noreply@allezpadel.dev>',
+      subject:
+        config.subject ||
+        `Welcome to AllezPadel! Verify your email using the code!`,
+      template: config.templateName, // 'verification',
+      context: ctx,
     });
   }
 }

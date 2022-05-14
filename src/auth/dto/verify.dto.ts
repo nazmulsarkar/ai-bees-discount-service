@@ -2,7 +2,7 @@ import { IsEmail, IsEnum, IsString, Matches, MinLength } from 'class-validator';
 import { Match } from '../../common/decorators/match.decorator';
 import { VerifyActionEnum } from '../../common/enums/verify-action.enum';
 
-export class UpdatePasswordDTO {
+export class VerifyDTO {
   @IsString()
   @MinLength(8)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {

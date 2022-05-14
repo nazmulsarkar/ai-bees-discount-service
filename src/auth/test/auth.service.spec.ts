@@ -1,6 +1,6 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { userStub } from '../../common/test/stubs/user.stub';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';

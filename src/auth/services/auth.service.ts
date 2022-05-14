@@ -1,4 +1,4 @@
-import { ErrorMessage } from './../common/dto/error-message.dto';
+import { ErrorMessage } from '../../common/dto/error-message.dto';
 import {
   BadRequestException,
   Injectable,
@@ -7,30 +7,30 @@ import {
   UnauthorizedException,
   UseFilters,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
-import { AuthResponseDto } from './dto/auth-response.dto';
-import { SignUp, SignUpDTO } from './dto/sign-up.dto';
-import { SignUpResponse } from './dto/sign-up-response.dto';
-import { AuthInputDTO } from './dto/auth-input.dto';
-import { User } from '../entities/user.entity';
-import { MailService } from '../mail/mail.service';
-import { GrantTypeEnum } from '../common/enums/grant-type.enum';
-import { JwtPayload } from '../common/interfaces/jwt-payload.interface';
+import { AuthResponseDto } from '../dto/auth-response.dto';
+import { SignUp, SignUpDTO } from '../dto/sign-up.dto';
+import { SignUpResponse } from '../dto/sign-up-response.dto';
+import { AuthInputDTO } from '../dto/auth-input.dto';
+import { User } from '../../entities/user.entity';
+import { MailService } from '../../mail/mail.service';
+import { GrantTypeEnum } from '../../common/enums/grant-type.enum';
+import { JwtPayload } from '../../common/interfaces/jwt-payload.interface';
 import {
   ChangePasswordDTO,
   ForgotPasswordDTO,
-} from './dto/forgot-password.dto';
-import { ValidationResponse } from '../common/dto/validation-response.dto';
-import { VerificationService } from '../verification/verification.service';
-import { CreateVerificationDTO } from '../verification/dto/create-verification.dto';
-import { VerifyActionEnum } from '../common/enums/verify-action.enum';
-import { UpdatePasswordDTO } from './dto/update-password.dto';
-import { SessionService } from '../session/session.service';
-import { MongoFilter } from '../common/filters/mongo-exception.filter';
-import { Role } from '../common/enums/role.enum';
+} from '../dto/forgot-password.dto';
+import { ValidationResponse } from '../../common/dto/validation-response.dto';
+import { VerificationService } from '../../verification/verification.service';
+import { CreateVerificationDTO } from '../../verification/dto/create-verification.dto';
+import { VerifyActionEnum } from '../../common/enums/verify-action.enum';
+import { VerifyDTO } from '../dto/verify.dto';
+import { SessionService } from '../../session/session.service';
+import { MongoFilter } from '../../common/filters/mongo-exception.filter';
+import { Role } from '../../common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -144,7 +144,7 @@ export class AuthService {
     const ctxData = { email, code, displayName };
 
     try {
-      return this.mailService.sendUserConfirmation({
+      return this.mailService.sendEmail({
         config: mailConfig,
         ctx: ctxData,
       });
@@ -283,20 +283,19 @@ export class AuthService {
     return validation;
   }
 
-  async updatePassword(
-    updatePassword: UpdatePasswordDTO,
-  ): Promise<AuthResponseDto> {
+  async verifyAccount(verifyDTO: VerifyDTO): Promise<AuthResponseDto> {
     const tokenResponse: AuthResponseDto = new AuthResponseDto();
 
     const verifyQuery: any = {
-      code: updatePassword.code,
+      email: verifyDTO.email,
+      code: verifyDTO.code,
     };
 
     const verifiedData = await this.verifyService.findOne({ ...verifyQuery });
 
     if (
       !verifiedData ||
-      (verifiedData.user as User).email !== updatePassword.email
+      (verifiedData.user as User).email !== verifyDTO.email
     ) {
       throw new BadRequestException(
         new ErrorMessage({
@@ -316,21 +315,21 @@ export class AuthService {
     const userQuery: Partial<User> = {
       _id: (verifiedData.user as User)._id,
       isActive:
-        updatePassword.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION
+        verifyDTO.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION
           ? false
           : true,
       isEmailVerified:
-        updatePassword.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION
+        verifyDTO.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION
           ? false
           : true,
     };
 
     try {
       const updateUserModel: Partial<User> = {
-        password: await this.getHash(updatePassword.password),
+        password: await this.getHash(verifyDTO.password),
       };
 
-      if (updatePassword.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION) {
+      if (verifyDTO.verifyAction === VerifyActionEnum.EMAIL_VERIFICATION) {
         updateUserModel.isActive = true;
         updateUserModel.isEmailVerified = true;
       }
@@ -541,6 +540,8 @@ export class AuthService {
         return tokenResponse;
       }
       tokenResponse.refreshToken = session.refreshToken;
+
+      this.userService.updateLoginStats({ _id });
 
       return tokenResponse;
     } catch (err) {

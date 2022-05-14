@@ -2,7 +2,7 @@ import { AuthResponseDto } from '../../dto/auth-response.dto';
 import { TokenTypeEnum } from '../../../common/enums/token-type.enum';
 import { userStub } from '../../../common/test/stubs/user.stub';
 import { ChangePasswordDTO } from '../../dto/forgot-password.dto';
-import { UpdatePasswordDTO } from '../../dto/update-password.dto';
+import { VerifyDTO } from '../../dto/verify.dto';
 import { VerifyActionEnum } from '../../../common/enums/verify-action.enum';
 import { SignUpResponse } from '../../dto/sign-up-response.dto';
 
@@ -21,7 +21,7 @@ export const changePasswordDTO = (): ChangePasswordDTO => {
   };
 };
 
-export const updatePasswordStub = (): UpdatePasswordDTO => {
+export const updatePasswordStub = (): VerifyDTO => {
   return {
     password: `1qazZAQ!`,
     passwordConfirm: `1qazZAQ!`,

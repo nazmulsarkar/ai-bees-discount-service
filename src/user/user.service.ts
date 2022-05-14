@@ -80,7 +80,12 @@ export class UserService {
   async findOne(filter: Partial<User>) {
     const data = await this.userModel.findOne({ ...filter }).exec();
     if (!data) {
-      throw new NotFoundException(`Profile not found`);
+      throw new NotFoundException(
+        new ErrorMessage({
+          code: `user_not_found`,
+          message: `User not found`,
+        }),
+      );
     }
     return data;
   }
@@ -110,6 +115,14 @@ export class UserService {
     }
 
     return res;
+  }
+
+  async updateLoginStats(filter: Partial<User>) {
+    const updateModel = {
+      $inc: { loginCount: 1 },
+      lastLoginTime: new Date(),
+    };
+    return this.updateOne({ ...filter }, updateModel);
   }
 
   buildQuery(filter: QueryUser) {

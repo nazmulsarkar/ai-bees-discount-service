@@ -16,7 +16,7 @@ export class VerificationService {
     const verifiedData = await this.verifyModel
       .findOne({ ...filter })
       .populate({
-        path: 'modelId',
+        path: 'user',
         select: ['_id', 'email', 'isActive', 'isEmailVerified'],
       });
 

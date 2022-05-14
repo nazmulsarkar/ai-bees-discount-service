@@ -7,7 +7,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { MongooseErrorFilter } from '../common/filters/mongoose-error.filter';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { SignUpDTO } from './dto/sign-up.dto';
@@ -17,7 +17,7 @@ import {
   ForgotPasswordDTO,
 } from './dto/forgot-password.dto';
 import { JwtPayload } from '../common/interfaces/jwt-payload.interface';
-import { UpdatePasswordDTO } from './dto/update-password.dto';
+import { VerifyDTO } from './dto/verify.dto';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { SignUpResponse } from './dto/sign-up-response.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
@@ -46,9 +46,9 @@ export class AuthController {
   @Post('verify')
   @HttpCode(200)
   async verifyEmailByCode(
-    @Body() verifyDTO: UpdatePasswordDTO,
+    @Body() verifyDTO: VerifyDTO,
   ): Promise<AuthResponseDto> {
-    return this.authService.updatePassword({
+    return this.authService.verifyAccount({
       ...verifyDTO,
     });
   }

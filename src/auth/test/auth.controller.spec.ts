@@ -11,7 +11,7 @@ import { MailModule } from '../../mail/mail.module';
 import { UserModule } from '../../user/user.module';
 import { VerificationModule } from '../../verification/verification.module';
 import { AuthController } from '../auth.controller';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { AuthInputDTO } from '../dto/auth-input.dto';
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import {
@@ -20,7 +20,7 @@ import {
 } from '../dto/forgot-password.dto';
 import { SignUpResponse } from '../dto/sign-up-response.dto';
 import { SignUpDTO } from '../dto/sign-up.dto';
-import { UpdatePasswordDTO } from '../dto/update-password.dto';
+import { VerifyDTO } from '../dto/verify.dto';
 
 jest.mock('../../common/strategies/jwt.strategy');
 jest.mock('../../users/users.module');
@@ -70,6 +70,8 @@ describe('AuthController', () => {
       beforeEach(async () => {
         emailSignUpDto = {
           email: userStub().email,
+          firstName: userStub().firstName,
+          lastName: userStub().lastName,
         };
 
         signupResponse = await authController.signup(emailSignUpDto);
@@ -117,12 +119,12 @@ describe('AuthController', () => {
     });
   });
 
-  describe('verifyEmailByCode', () => {
-    describe('when verifyEmailByCode is called', () => {
+  describe('verifyAccount', () => {
+    describe('when verifyAccount is called', () => {
       let verifyResponse: AuthResponseDto;
       let verifyFromServiceResponse: AuthResponseDto;
 
-      const updatePasswordDto: UpdatePasswordDTO = {
+      const updatePasswordDto: VerifyDTO = {
         email: ``,
         code: `4503`,
         password: `1qazZAQ!`,
@@ -134,13 +136,13 @@ describe('AuthController', () => {
         verifyResponse = await authController.verifyEmailByCode(
           updatePasswordDto,
         );
-        verifyFromServiceResponse = await authService.updatePassword(
+        verifyFromServiceResponse = await authService.verifyAccount(
           updatePasswordDto,
         );
       });
 
       test('then it should call authService.updatePassword', () => {
-        expect(authService.updatePassword).toBeCalledWith(updatePasswordDto);
+        expect(authService.verifyAccount).toBeCalledWith(updatePasswordDto);
       });
 
       test('then it should return success response', () => {
