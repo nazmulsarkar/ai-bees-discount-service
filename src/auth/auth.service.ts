@@ -29,7 +29,6 @@ import { CreateVerificationDTO } from '../verification/dto/create-verification.d
 import { VerifyActionEnum } from '../common/enums/verify-action.enum';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { SessionService } from '../session/session.service';
-import { VERIFY_EMAIL_TEMPLATE } from '../common/constants/sendgrid-templates';
 import { MongoFilter } from '../common/filters/mongo-exception.filter';
 import { Role } from '../common/enums/role.enum';
 
@@ -84,7 +83,7 @@ export class AuthService {
         email: createdUser.email,
         displayName: createdUser.displayName,
         code: createdVerification.code,
-        templateName: VERIFY_EMAIL_TEMPLATE,
+        templateName: `confirmation`,
       });
 
       if (!sentEmail) {
@@ -195,7 +194,7 @@ export class AuthService {
         email: forgottenUser.email,
         displayName: forgottenUser.displayName,
         code: createdVerification.code,
-        templateName: VERIFY_EMAIL_TEMPLATE,
+        templateName: `confirmation`,
       });
 
       forgotPasswordResponse.success = true;

@@ -4,12 +4,11 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
-import { UsersModule } from '../users/users.module';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { VerificationModule } from '../verification/verification.module';
 import { SessionModule } from '../session/session.module';
-import { MessagingModule } from '../messaging/messaging.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -19,11 +18,10 @@ import { MessagingModule } from '../messaging/messaging.module';
       secret: `${process.env.JWT_SECRET}`,
       signOptions: { expiresIn: `${process.env.JWT_EXPIRES}` },
     }),
-    UsersModule,
+    UserModule,
     MailModule,
     VerificationModule,
     SessionModule,
-    MessagingModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

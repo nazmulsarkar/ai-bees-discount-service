@@ -4,11 +4,9 @@ import { AuthService } from '../auth.service';
 import { userStub } from '../../common/test/stubs/user.stub';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from '../../users/users.module';
 import { MailModule } from '../../mail/mail.module';
 import { VerificationModule } from '../../verification/verification.module';
 import { AuthController } from '../auth.controller';
-import { UsersService } from '../../users/users.service';
 import { VerificationService } from '../../verification/verification.service';
 import { MailService } from '../../mail/mail.service';
 import { JwtStrategy } from '../../common/strategies/jwt.strategy';
@@ -27,6 +25,8 @@ import {
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { AuthInputDTO } from '../dto/auth-input.dto';
 import { GrantTypeEnum } from '../../common/enums/grant-type.enum';
+import { UserService } from '../../user/user.service';
+import { UserModule } from '../../user/user.module';
 
 jest.mock('../../users/users.service');
 jest.mock('../../verification/verification.service');
@@ -38,7 +38,7 @@ jest.mock('../auth.controller');
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let usersService: UsersService;
+  let userService: UserService;
   let verifyService: VerificationService;
 
   beforeEach(async () => {
@@ -52,13 +52,13 @@ describe('AuthService', () => {
           secret: `${process.env.JWT_SECRET}`,
           signOptions: { expiresIn: `${process.env.JWT_EXPIRES}` },
         }),
-        UsersModule,
+        UserModule,
         MailModule,
         VerificationModule,
       ],
       controllers: [AuthController],
       providers: [
-        UsersService,
+        UserService,
         AuthService,
         VerificationService,
         JwtStrategy,
@@ -67,7 +67,7 @@ describe('AuthService', () => {
     }).compile();
 
     authService = moduleRef.get<AuthService>(AuthService);
-    usersService = moduleRef.get<UsersService>(UsersService);
+    userService = moduleRef.get<UserService>(UserService);
     verifyService = moduleRef.get<VerificationService>(VerificationService);
 
     jest.clearAllMocks();
@@ -97,7 +97,7 @@ describe('AuthService', () => {
       });
 
       test('then it should call usersService', () => {
-        expect(usersService.create).toBeCalledWith(emailSignUp);
+        expect(userService.create).toBeCalledWith(emailSignUp);
       });
 
       test('then it should return success response', () => {
@@ -126,7 +126,7 @@ describe('AuthService', () => {
       });
 
       test('then it should call usersService', () => {
-        expect(usersService.findOne).toBeCalledWith(queryExistingUser);
+        expect(userService.findOne).toBeCalledWith(queryExistingUser);
       });
 
       test('then it should return success response', () => {
@@ -152,7 +152,7 @@ describe('AuthService', () => {
       });
 
       test('then it should call usersService.updateOne', () => {
-        expect(usersService.updateOne).toBeCalled();
+        expect(userService.updateOne).toBeCalled();
       });
 
       // test('then it should call authService.getHash', () => {
@@ -180,7 +180,7 @@ describe('AuthService', () => {
       });
 
       test('then it should call usersService.updateOne', () => {
-        expect(usersService.updateOne).toBeCalled();
+        expect(userService.updateOne).toBeCalled();
       });
 
       test('then it should call verifyService.removeById', () => {
