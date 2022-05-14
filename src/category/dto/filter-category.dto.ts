@@ -1,6 +1,6 @@
 import { IntersectionType, PartialType } from '@nestjs/mapped-types';
 import { CreateCategoryDTO } from './create-category.dto';
-import { Pagination } from 'src/common/dto/pagination.dto';
+import { Pagination } from '../../common/dto/pagination.dto';
 
 export class FilterCategoryDTO extends PartialType(CreateCategoryDTO) {}
 

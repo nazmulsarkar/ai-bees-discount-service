@@ -61,6 +61,45 @@ export class CategoryService {
     }
   }
 
+  private calculateCategoryDiscount(
+    categories: Category[],
+    filter: Partial<Category>,
+  ): number {
+    let discount = -1;
+    if (!(categories.length > 0)) {
+      return discount;
+    }
+    const productCategory = categories.filter(
+      (c) => String(c._id) === String(filter._id),
+    )[0];
+
+    if (!productCategory && !(productCategory.discount > 0)) {
+      return discount;
+    }
+
+    discount = productCategory.discount;
+
+    for (const category of categories) {
+      if (
+        String(productCategory._id) === String(category._id) &&
+        category.discount > 0
+      ) {
+        discount = category.discount;
+        return discount;
+      }
+      this.calculateCategoryDiscount(categories, category);
+    }
+
+    return discount;
+  }
+
+  async getCategoryDiscount(filter: Partial<Category>) {
+    let categoryDiscount = -1;
+    const categories = await this.categoryModel.find();
+    categoryDiscount = this.calculateCategoryDiscount(categories, filter);
+    return categoryDiscount;
+  }
+
   async create(createModel: Partial<Category>): Promise<Category> {
     try {
       return this.categoryModel.create(createModel);

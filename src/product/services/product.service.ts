@@ -11,6 +11,7 @@ import { QueryProduct } from '../dto/filter-product.dto';
 import { UpdateProductDTO } from '../dto/update-product.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
+import { Discount } from '../../invoice/dto/discount.dto';
 
 @Injectable()
 export class ProductService {
@@ -119,5 +120,18 @@ export class ProductService {
     return {
       success: true,
     };
+  }
+
+  async findOneDiscountInout(filter: Discount) {
+    const data = await this.productModel.findOne({ ...filter }).exec();
+    if (!data) {
+      throw new NotFoundException(
+        new ErrorMessage({
+          code: `product_not_found`,
+          message: `Product not found`,
+        }),
+      );
+    }
+    return data;
   }
 }

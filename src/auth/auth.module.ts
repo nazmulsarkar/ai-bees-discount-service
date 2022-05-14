@@ -8,7 +8,7 @@ import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { VerificationModule } from '../verification/verification.module';
 import { SessionModule } from '../session/session.module';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
