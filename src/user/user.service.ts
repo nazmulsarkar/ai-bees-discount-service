@@ -180,4 +180,19 @@ export class UserService {
       throw new BadRequestException(err.message);
     }
   }
+
+  async remove(_id: Types.ObjectId) {
+    const { deletedCount } = await this.userModel.deleteOne({ _id });
+    if (!deletedCount) {
+      throw new NotFoundException(
+        new ErrorMessage({
+          code: `user_not_found`,
+          message: `User couldn't be found!`,
+        }),
+      );
+    }
+    return {
+      success: true,
+    };
+  }
 }

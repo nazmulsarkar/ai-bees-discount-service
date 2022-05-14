@@ -17,6 +17,7 @@ export class Category {
     required: true,
     type: MongooseSchema.Types.ObjectId,
     ref: Category.name,
+    default: null,
   })
   parent: Types.ObjectId | Category;
 

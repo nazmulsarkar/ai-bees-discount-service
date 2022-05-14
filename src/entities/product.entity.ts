@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 import { Category } from './category.entity';
+import { LanguageEnum } from '../common/enums/language.enum';
+// import { Expose } from 'class-transformer';
 
 @Schema({
   timestamps: true,
@@ -32,6 +34,14 @@ export class Product {
 
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
+
+  @Prop({ default: LanguageEnum.EN })
+  language: LanguageEnum;
+
+  // @Expose()
+  // get parents(): string {
+  //   return `${this.firstName} ${this.lastName}`.trim();
+  // }
 
   _id?: Types.ObjectId;
   createdAt?: Date;
