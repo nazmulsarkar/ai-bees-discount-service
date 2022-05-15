@@ -23,6 +23,9 @@ async function bootstrap() {
     .setDescription('Demo API Application')
     .setVersion('1.0')
     .addTag('auth')
+    .addTag('categories')
+    .addTag('products')
+    .addTag('invoices')
     // .addBearerAuth()
     .build();
 

@@ -12,6 +12,8 @@ import { UpdateCategoryDTO } from '../dto/update-category.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
 
+const populateCategoryFields = ['parent', '_id', 'title', 'discount'];
+
 @Injectable()
 export class CategoryService {
   constructor(
@@ -47,8 +49,20 @@ export class CategoryService {
         .skip(skip * size)
         .limit(size)
         .populate({
-          path: 'categoryId',
-          select: ['_id', 'isActive', 'email'],
+          path: 'parent',
+          select: populateCategoryFields,
+          populate: {
+            path: 'parent',
+            select: populateCategoryFields,
+            populate: {
+              path: 'parent',
+              select: populateCategoryFields,
+              populate: {
+                path: 'parent',
+                select: populateCategoryFields,
+              },
+            },
+          },
         })
         .exec();
 

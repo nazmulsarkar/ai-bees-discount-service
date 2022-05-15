@@ -14,7 +14,6 @@ export class Category {
   title: string;
 
   @Prop({
-    required: true,
     type: MongooseSchema.Types.ObjectId,
     ref: Category.name,
     default: null,

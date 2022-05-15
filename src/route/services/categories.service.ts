@@ -2,6 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CategoryService } from '../../category/services/category.service';
 import { CreateCategoryDTO } from '../../category/dto/create-category.dto';
 import { Category } from '../../entities/category.entity';
+import { QueryCategory } from 'src/category/dto/filter-category.dto';
+import { Types } from 'mongoose';
+import { UpdateCategoryDTO } from 'src/category/dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -13,5 +16,17 @@ export class CategoriesService {
     } catch (err) {
       throw new BadRequestException(err);
     }
+  }
+
+  async getCategoryList(queryParams: QueryCategory) {
+    return this.categoryService.findAll(queryParams);
+  }
+
+  async updateCategory(_id: Types.ObjectId, modelData: UpdateCategoryDTO) {
+    return this.categoryService.updateOne({ _id }, modelData);
+  }
+
+  async deleteCategory(_id: Types.ObjectId) {
+    return this.categoryService.remove(_id);
   }
 }
