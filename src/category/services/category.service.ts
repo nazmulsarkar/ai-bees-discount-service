@@ -11,8 +11,7 @@ import { QueryCategory } from '../dto/filter-category.dto';
 import { UpdateCategoryDTO } from '../dto/update-category.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
-
-const populateCategoryFields = ['parent', '_id', 'title', 'discount'];
+import { populateCategoryFields } from '../../common/constants/populate-fields.const';
 
 @Injectable()
 export class CategoryService {

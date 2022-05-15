@@ -1,6 +1,18 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateProductDTO } from 'src/product/dto/create-product.dto';
+import { Types } from 'mongoose';
+import { CreateProductDTO } from '../../product/dto/create-product.dto';
+import { QueryProduct } from '../../product/dto/filter-product.dto';
+import { UpdateProductDTO } from '../../product/dto/update-product.dto';
 import { ProductsService } from '../services/products.service';
 
 @ApiTags('products')
@@ -9,7 +21,25 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  async createProduct(@Body() createProductDto: CreateProductDTO) {
+  async createProdcut(@Body() createProductDto: CreateProductDTO) {
     return this.productsService.create(createProductDto);
+  }
+
+  @Get()
+  async getProductList(@Query() queryParams: QueryProduct) {
+    return this.productsService.getProductList(queryParams);
+  }
+
+  @Patch(':id')
+  async updtaeProduct(
+    @Param('id') id: Types.ObjectId,
+    @Body() updateProductDTO: UpdateProductDTO,
+  ) {
+    return this.productsService.updateProduct(id, updateProductDTO);
+  }
+
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: Types.ObjectId) {
+    return this.productsService.deleteProduct(id);
   }
 }

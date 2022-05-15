@@ -12,6 +12,7 @@ import { UpdateProductDTO } from '../dto/update-product.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
 import { Discount } from '../../route/dto/invoice/discount.dto';
+import { populateCategoryFields } from 'src/common/constants/populate-fields.const';
 
 @Injectable()
 export class ProductService {
@@ -122,8 +123,26 @@ export class ProductService {
     };
   }
 
-  async findOneDiscountInout(filter: Discount) {
-    const data = await this.productModel.findOne({ ...filter }).exec();
+  async findOneByDiscountInout(filter: Discount) {
+    const data = await this.productModel
+      .findOne({ ...filter })
+      .populate({
+        path: 'category',
+        select: populateCategoryFields,
+        populate: {
+          path: 'parent',
+          select: populateCategoryFields,
+          populate: {
+            path: 'parent',
+            select: populateCategoryFields,
+            populate: {
+              path: 'parent',
+              select: populateCategoryFields,
+            },
+          },
+        },
+      })
+      .exec();
     if (!data) {
       throw new NotFoundException(
         new ErrorMessage({
