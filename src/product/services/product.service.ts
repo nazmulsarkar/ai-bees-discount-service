@@ -11,7 +11,7 @@ import { QueryProduct } from '../dto/filter-product.dto';
 import { UpdateProductDTO } from '../dto/update-product.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
-import { Discount } from '../../invoice/dto/discount.dto';
+import { Discount } from '../../route/dto/invoice/discount.dto';
 
 @Injectable()
 export class ProductService {

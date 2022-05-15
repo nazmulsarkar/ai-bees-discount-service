@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { LanguageEnum } from './common/enums/language.enum';
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
+import { RouteModule } from './route/route.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     MailModule,
+    RouteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

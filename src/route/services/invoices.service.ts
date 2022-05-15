@@ -2,10 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ProductService } from '../../product/services/product.service';
 import { CategoryService } from '../../category/services/category.service';
 import { Types } from 'mongoose';
-import { Discount } from '../dto/discount.dto';
+import { Discount } from '../dto/invoice/discount.dto';
 
 @Injectable()
-export class InvoiceService {
+export class InvoicesService {
   constructor(
     private readonly productService: ProductService,
     private readonly categoryService: CategoryService,
@@ -21,7 +21,7 @@ export class InvoiceService {
         discount = product.discount;
         return discount;
       }
-      const categories = await this.categoryService.getCategoryDiscount({
+      discount = await this.categoryService.getCategoryDiscount({
         _id: product.category as Types.ObjectId,
       });
       return discount;
