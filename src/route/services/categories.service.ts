@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CategoryService } from '../../category/services/category.service';
 import { CreateCategoryDTO } from '../../category/dto/create-category.dto';
 import { Category } from '../../entities/category.entity';
-import { QueryCategory } from 'src/category/dto/filter-category.dto';
+import { QueryCategory } from '../../category/dto/filter-category.dto';
 import { Types } from 'mongoose';
-import { UpdateCategoryDTO } from 'src/category/dto/update-category.dto';
+import { UpdateCategoryDTO } from '../../category/dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {

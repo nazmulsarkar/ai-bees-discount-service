@@ -1,5 +1,5 @@
-import { ErrorMessage } from './../../common/dto/error-message.dto';
 import { IsEnum, IsOptional, IsString, IsBoolean } from 'class-validator';
+import { ErrorMessage } from './../../common/dto/error-message.dto';
 import { TokenTypeEnum } from '../../common/enums/token-type.enum';
 
 export class AuthResponseDto {
@@ -27,7 +27,4 @@ export class AuthResponseDto {
   @IsOptional()
   @IsString()
   refreshToken?: string;
-
-  @IsOptional()
-  user?: any;
 }

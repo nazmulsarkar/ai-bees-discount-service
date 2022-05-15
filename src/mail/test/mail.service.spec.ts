@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '../mail.service';
 
@@ -6,6 +7,7 @@ describe('MailService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MailerModule],
       providers: [MailService],
     }).compile();
 

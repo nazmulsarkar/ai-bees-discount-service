@@ -27,12 +27,16 @@ import { AuthInputDTO } from '../dto/auth-input.dto';
 import { GrantTypeEnum } from '../../common/enums/grant-type.enum';
 import { UserService } from '../../user/user.service';
 import { UserModule } from '../../user/user.module';
+import { SessionModule } from '../../session/session.module';
+import { SessionService } from '../../session/session.service';
 
-jest.mock('../../users/users.service');
+jest.mock('../../session/session.module');
+jest.mock('../../user/user.module');
+jest.mock('../../verification/verification.module');
+jest.mock('../../session/session.service');
+jest.mock('../../user/user.service');
 jest.mock('../../verification/verification.service');
 jest.mock('../../mail/mail.service');
-jest.mock('../../users/users.module');
-jest.mock('../../verification/verification.module');
 jest.mock('../../common/strategies/jwt.strategy');
 jest.mock('../auth.controller');
 
@@ -55,6 +59,7 @@ describe('AuthService', () => {
         UserModule,
         MailModule,
         VerificationModule,
+        SessionModule,
       ],
       controllers: [AuthController],
       providers: [
@@ -63,6 +68,7 @@ describe('AuthService', () => {
         VerificationService,
         JwtStrategy,
         MailService,
+        SessionService,
       ],
     }).compile();
 
@@ -86,6 +92,8 @@ describe('AuthService', () => {
       beforeEach(async () => {
         emailSignUpDto = {
           email: userStub().email,
+          firstName: userStub().firstName,
+          lastName: userStub().lastName,
         };
 
         emailSignUp = {
@@ -165,12 +173,12 @@ describe('AuthService', () => {
     });
   });
 
-  describe('updatePassword', () => {
-    describe('when updatePassword is called', () => {
+  describe('verifyAccount', () => {
+    describe('when verifyAccount is called', () => {
       let response: AuthResponseDto;
 
       beforeEach(async () => {
-        response = await authService.updatePassword({
+        response = await authService.verifyAccount({
           ...updatePasswordStub(),
         });
       });
@@ -193,10 +201,6 @@ describe('AuthService', () => {
 
       test("then it should return 'tokenType' with success response", () => {
         expect(response).toHaveProperty('tokenType');
-      });
-
-      test("then it should return 'user' with success response", () => {
-        expect(response).toHaveProperty('user');
       });
     });
   });
@@ -227,10 +231,6 @@ describe('AuthService', () => {
 
       test("then it should return 'tokenType' with success response", () => {
         expect(response).toHaveProperty('tokenType');
-      });
-
-      test("then it should return 'user' with success response", () => {
-        expect(response).toHaveProperty('user');
       });
     });
   });

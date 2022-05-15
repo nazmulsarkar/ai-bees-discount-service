@@ -21,11 +21,12 @@ import {
 import { SignUpResponse } from '../dto/sign-up-response.dto';
 import { SignUpDTO } from '../dto/sign-up.dto';
 import { VerifyDTO } from '../dto/verify.dto';
+import { SessionModule } from '../../session/session.module';
 
 jest.mock('../../common/strategies/jwt.strategy');
-jest.mock('../../users/users.module');
+jest.mock('../../user/user.module');
 jest.mock('../../verification/verification.module');
-jest.mock('../auth.service');
+jest.mock('../services/auth.service');
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -45,6 +46,7 @@ describe('AuthController', () => {
         UserModule,
         MailModule,
         VerificationModule,
+        SessionModule,
       ],
       controllers: [AuthController],
       providers: [AuthService, JwtStrategy],

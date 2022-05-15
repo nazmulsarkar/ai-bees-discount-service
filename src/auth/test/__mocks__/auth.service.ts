@@ -2,14 +2,14 @@ import {
   authSuccResponseStub,
   changePasswordResponseStub,
   signupResponseStub,
-} from '../test/stubs/auth.stubs';
+} from '../stubs/auth.stubs';
 
 export const AuthService = jest.fn().mockReturnValue({
   signUp: jest.fn().mockResolvedValue(signupResponseStub()),
   createVerification: jest.fn().mockResolvedValue({}),
   sendVerificationCode: jest.fn().mockResolvedValue({}),
   forgotPassword: jest.fn().mockResolvedValue(signupResponseStub()),
-  updatePassword: jest.fn().mockResolvedValue(authSuccResponseStub()),
+  verifyAccount: jest.fn().mockResolvedValue(authSuccResponseStub()),
   authToken: jest.fn().mockResolvedValue(authSuccResponseStub()),
   authEmailPass: jest.fn().mockResolvedValue(authSuccResponseStub()),
   generateAccessToken: jest.fn().mockResolvedValue('some_token'),

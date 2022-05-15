@@ -12,7 +12,7 @@ import { UpdateProductDTO } from '../dto/update-product.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
 import { Discount } from '../../route/dto/invoice/discount.dto';
-import { populateCategoryFields } from 'src/common/constants/populate-fields.const';
+import { populateCategoryFields } from '../../common/constants/populate-fields.const';
 
 @Injectable()
 export class ProductService {

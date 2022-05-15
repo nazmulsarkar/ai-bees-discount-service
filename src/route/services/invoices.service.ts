@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ProductService } from '../../product/services/product.service';
 import { Discount } from '../dto/invoice/discount.dto';
-import { Category } from 'src/entities/category.entity';
-import { DiscountResponse } from 'src/common/dto/discount-response.dto';
-import { DiscountInEnum } from 'src/common/enums/discount-in.enum';
+import { Category } from '../../entities/category.entity';
+import { DiscountResponse } from '../../common/dto/discount-response.dto';
+import { DiscountInEnum } from '../../common/enums/discount-in.enum';
 
 @Injectable()
 export class InvoicesService {

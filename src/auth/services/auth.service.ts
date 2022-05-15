@@ -655,7 +655,7 @@ export class AuthService {
     } = user;
 
     try {
-      return await this.jwtService.signAsync({
+      return this.jwtService.signAsync({
         _id,
         email,
         firstName,

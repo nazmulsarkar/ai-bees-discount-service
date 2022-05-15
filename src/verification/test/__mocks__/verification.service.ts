@@ -1,4 +1,4 @@
-import { verificationStub } from '../test/stubs/verification.stubs';
+import { verificationStub } from '../stubs/verification.stubs';
 
 export const VerificationService = jest.fn().mockReturnValue({
   findOne: jest.fn().mockResolvedValue(verificationStub()),

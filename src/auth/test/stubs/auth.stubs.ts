@@ -10,7 +10,7 @@ export const authSuccResponseStub = (): AuthResponseDto => ({
   success: true,
   tokenType: TokenTypeEnum.BEARER,
   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  user: { ...userStub() },
+  refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
 });
 
 export const changePasswordDTO = (): ChangePasswordDTO => {
