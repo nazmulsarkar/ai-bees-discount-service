@@ -29,7 +29,7 @@ export class Product {
   @Prop({ type: Number, default: 5 })
   price: number;
 
-  @Prop({ type: Number, default: 10 })
+  @Prop({ type: Number, default: 100 })
   quantity: number;
 
   @Prop({ type: Boolean, default: true })
@@ -37,11 +37,6 @@ export class Product {
 
   @Prop({ default: LanguageEnum.EN })
   language: LanguageEnum;
-
-  // @Expose()
-  // get parents(): string {
-  //   return `${this.firstName} ${this.lastName}`.trim();
-  // }
 
   _id?: Types.ObjectId;
   createdAt?: Date;

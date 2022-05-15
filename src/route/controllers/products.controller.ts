@@ -7,15 +7,18 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateProductDTO } from '../../product/dto/create-product.dto';
 import { QueryProduct } from '../../product/dto/filter-product.dto';
 import { UpdateProductDTO } from '../../product/dto/update-product.dto';
 import { ProductsService } from '../services/products.service';
 
 @ApiTags('products')
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class BaseProductDTO {
@@ -8,12 +8,15 @@ export class BaseProductDTO {
   @IsNotEmpty()
   category: Types.ObjectId;
 
+  @IsOptional()
   @IsNumber()
-  discount: number;
+  discount?: number;
 
+  @IsOptional()
   @IsNumber()
-  price: number;
+  price?: number;
 
+  @IsOptional()
   @IsNumber()
-  quantity: number;
+  quantity?: number;
 }

@@ -8,6 +8,7 @@ export class BaseCategoryDTO {
   @IsOptional()
   parent?: Types.ObjectId;
 
+  @IsOptional()
   @IsNumber()
-  discount: number;
+  discount?: number;
 }

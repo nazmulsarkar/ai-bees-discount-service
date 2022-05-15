@@ -49,8 +49,20 @@ export class ProductService {
         .skip(skip * size)
         .limit(size)
         .populate({
-          path: 'productId',
-          select: ['_id', 'isActive', 'email'],
+          path: 'category',
+          select: populateCategoryFields,
+          populate: {
+            path: 'parent',
+            select: populateCategoryFields,
+            populate: {
+              path: 'parent',
+              select: populateCategoryFields,
+              populate: {
+                path: 'parent',
+                select: populateCategoryFields,
+              },
+            },
+          },
         })
         .exec();
 
@@ -123,9 +135,10 @@ export class ProductService {
     };
   }
 
-  async findOneByDiscountInout(filter: Discount) {
+  async findOneByDiscountInput(filter: Discount) {
+    const filterQry = await this.buildQueryForDiscountInput({ ...filter });
     const data = await this.productModel
-      .findOne({ ...filter })
+      .findOne({ ...filterQry })
       .populate({
         path: 'category',
         select: populateCategoryFields,
@@ -152,5 +165,20 @@ export class ProductService {
       );
     }
     return data;
+  }
+
+  async buildQueryForDiscountInput(filter: Discount) {
+    const filterQry = {} as any;
+
+    if (filter.productId) {
+      filterQry._id = filter.productId;
+    }
+    if (filter.productTitle) {
+      filterQry.title = {
+        $regex: filter.productTitle,
+        $options: 'i',
+      };
+    }
+    return filterQry;
   }
 }
