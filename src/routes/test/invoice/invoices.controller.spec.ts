@@ -1,23 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { InvoicesService } from '../../services/invoices.service';
 import { InvoicesController } from '../../controllers/invoices.controller';
+import { InvoicesService } from '../../services/invoices.service';
 import { CategoryModule } from '../../../category/category.module';
 import { ProductModule } from '../../../product/product.module';
-import { CategoriesService } from '../../../route/services/categories.service';
-import { ProductsService } from '../../../route/services/products.service';
+import { CategoriesService } from '../../services/categories.service';
+import { ProductsService } from '../../services/products.service';
+import { DiscountDTO } from '../../dto/invoice/discount.dto';
 import { DiscountResponse } from '../../../common/dto/discount-response.dto';
-import { Discount } from '../../../route/dto/invoice/discount.dto';
-import { ProductService } from '../../../product/services/product.service';
 import { discountDto } from './stubs/invoice.stubs';
 
-jest.mock('../../controllers/invoices.controller');
 jest.mock('../../../route/services/products.service');
-jest.mock('../../../product/services/product.service');
 jest.mock('../../../route/services/categories.service');
 
-describe('InvoicesService', () => {
+describe('InvoicesController', () => {
+  let invoicesController: InvoicesController;
   let invoicesService: InvoicesService;
-  let productService: ProductService;
 
   beforeEach(async () => {
     jest.resetModules();
@@ -27,13 +24,15 @@ describe('InvoicesService', () => {
       controllers: [InvoicesController],
       providers: [CategoriesService, ProductsService, InvoicesService],
     }).compile();
+
+    invoicesController = moduleRef.get<InvoicesController>(InvoicesController);
     invoicesService = moduleRef.get<InvoicesService>(InvoicesService);
-    productService = moduleRef.get<ProductService>(ProductService);
 
     jest.clearAllMocks();
   });
 
   it('should be defined', () => {
+    expect(invoicesController).toBeDefined();
     expect(invoicesService).toBeDefined();
   });
 
@@ -41,22 +40,21 @@ describe('InvoicesService', () => {
     describe('when getDiscount is called', () => {
       let discountResponse: DiscountResponse;
       let discountResponseFromService: DiscountResponse;
-      let discountInput: Discount;
+      let discountInput: DiscountDTO;
 
       beforeEach(async () => {
         discountInput = {
           ...discountDto(),
         };
 
+        discountResponse = await invoicesController.getDiscount(discountInput);
         discountResponseFromService = await invoicesService.getDiscount(
           discountInput,
         );
       });
 
       test('then it should call service', () => {
-        expect(productService.findOneByDiscountInput).toBeCalledWith(
-          discountInput,
-        );
+        expect(invoicesService.getDiscount).toBeCalledWith(discountDto);
       });
 
       test('then it should return success response', () => {

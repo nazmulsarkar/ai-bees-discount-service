@@ -11,7 +11,7 @@ import { QueryProduct } from '../dto/filter-product.dto';
 import { UpdateProductDTO } from '../dto/update-product.dto';
 import { ErrorMessage } from '../../common/dto/error-message.dto';
 import { QueryResponse } from '../../common/dto/query-response.dto';
-import { Discount } from '../../route/dto/invoice/discount.dto';
+import { Discount } from '../../routes/dto/invoice/discount.dto';
 import { populateCategoryFields } from '../../common/constants/populate-fields.const';
 
 @Injectable()

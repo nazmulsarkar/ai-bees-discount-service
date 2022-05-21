@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { DiscountResponse } from '../../../../common/dto/discount-response.dto';
 import { DiscountInEnum } from '../../../../common/enums/discount-in.enum';
-import { DiscountDTO } from '../../../../route/dto/invoice/discount.dto';
+import { DiscountDTO } from '../../../dto/invoice/discount.dto';
 
 export const discount = (): DiscountResponse => ({
   discount: -1,

@@ -13,4 +13,4 @@ import { ProductsService } from './services/products.service';
   controllers: [CategoriesController, ProductsController, InvoicesController],
   providers: [CategoriesService, ProductsService, InvoicesService],
 })
-export class RouteModule {}
+export class RoutesModule {}
